@@ -1,5 +1,5 @@
 pipeline {
-    agent {label 'dockerbuildnode'}
+    agent {label 'slaveone'}
     stages {
         stage('my Build') {
             steps {
@@ -15,7 +15,7 @@ pipeline {
             }
         } 
         stage( 'my deploy' ) {
-        agent {label 'dockerdeploynode'} 
+        agent {label 'slavetwo'} 
             steps {
                sh 'docker pull navyakonappalli/mynav:${BUILD_NUMBER}'
                sh 'docker rm -f mytomcat'
