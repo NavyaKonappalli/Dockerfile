@@ -1,24 +1,26 @@
 pipeline {
-	agent none
-        stages {
-           stage ("tomcat buid & move to other node") {
-	       agent {label "slaveone"}
-               steps {
-                      sh 'sudo mvn package'
-		      sh 'ls'
-		      sh 'scp -R target/hello-world-war-1.0.0.war root@172.31.2.183:/opt/tomcat/webapps'
-		      echo "sucessfully copied build to other node"
-	       }
-	   }
-	   stage ('deploy in node2') {
-	   	agent {label "slavetwo"}
-		steps {
-		    sh 'sh /opt/tomcat/bin/shutdown.sh'                   
-                    sh 'sleep 3'
-                    sh 'sh /opt/tomcat/bin/startup.sh'
-                    echo "deployment is sucessfull"
-                    echo "copy the public ip of instace and open it in browser with port:8090"
-		}
-	   } 	   
-        }
+    agent {label 'b'}
+    stages {
+        stage('my Build') {
+            steps {
+                sh 'docker build -t tomcat_build:${BUILD_NUMBER} .'
+            }
+        }  
+        stage('publish stage') {
+            steps {
+                sh "echo ${BUILD_NUMBER}"
+                sh 'docker login -u ebenneelpinto -p Neil123451!'
+                sh 'docker tag tomcat_build:${BUILD_NUMBER} navyakonappalli/mynav:${BUILD_NUMBER}'
+                sh 'docker push navyakonappalli/mynav:${BUILD_NUMBER}'
+            }
+        } 
+        stage( 'my deploy' ) {
+        agent {label 's'} 
+            steps {
+               sh 'docker pull navyakonappalli/mynav:${BUILD_NUMBER}'
+               sh 'docker rm -f mytomcat'
+               sh 'docker run -d -p 8080:8080 --name mytomcat navyakonappalli/mynav:${BUILD_NUMBER}'
+            }
+        }    
+    } 
 }
