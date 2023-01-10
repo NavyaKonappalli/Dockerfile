@@ -1,0 +1,22 @@
+pipeline {
+  agent none
+    stages { 
+      stage ('Build'){
+        agent { label 'slaveone' }
+          steps {
+            sh 'echo ${BUILD_NUMBER}'
+            sh 'mvn deploy'
+            sh 'scp -R target/hello-world-war-${BUILD_NUMBER}.war root@172.31.2.183:/opt/tomcat/webapps'
+          }        
+      }
+      stage ('Deploy') {
+          agent {label 'slavetwo'}
+            steps{
+                sh 'sudo sh /opt/tomcat/bin/startup.sh'
+                sh 'curl -ukonappalli.navya@gmail.com:cmVmdGtuOjAxOjAwMDAwMDAwMDA6OXc2U1ZqMElBdnpWa2NtdGNhTGdabk5FZ3NH -O https://navyashreekonappalli.jfrog.io/artifactory/libs-release-local/com/efsavage/hello-world-war/${BUILD_NUMBER}/hello-world-war-${BUILD_NUMBER}.war'
+      
+
+            }
+      }
+  }
+ }
