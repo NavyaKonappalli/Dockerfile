@@ -7,6 +7,7 @@ pipeline {
             }
         }  
         stage('publish stage') {
+            agent {label 'slaveone'}
             steps {
                 sh "echo ${BUILD_NUMBER}"
                 sh 'docker login -u navyakonappalli -p NaMaN@5160'
