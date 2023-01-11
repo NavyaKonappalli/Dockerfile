@@ -4,7 +4,7 @@ pipeline {
         stage('my Build') {
             steps {
                 sh "echo ${BUILD_NUMBER}"
-                sh 'chmod 664 /var/run/docker.sock'
+                sh 'chmod 777 /var/run/docker.sock'
                 sh 'docker build -t tomcat_build:${BUILD_NUMBER} .'
             }
         }  
