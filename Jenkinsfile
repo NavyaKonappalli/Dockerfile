@@ -12,6 +12,7 @@ pipeline {
             agent {label 'slaveone'}
             steps {
                 sh "echo ${BUILD_NUMBER}"
+                sh 'docker login -u navyakonappalli -p NaMaN@5160'
                 sh 'docker tag tomcat_build:${BUILD_NUMBER} navyakonappalli/tomcat:${BUILD_NUMBER}'
                 sh 'docker push navyakonappalli/tomcat:${BUILD_NUMBER}'
             }
