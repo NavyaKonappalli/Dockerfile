@@ -4,7 +4,8 @@ pipeline {
         stage('my Build') {
             steps {
                 sh "echo ${BUILD_NUMBER}"
-                sh 'docker build -t tomcat_build .'
+                sh 'sudo chmod -R 777 /var/run/docker.sock'
+                sh 'docker build -t tomcat_build:${BUILD_NUMBER} .'
             }
         }  
         stage('publish stage') {
