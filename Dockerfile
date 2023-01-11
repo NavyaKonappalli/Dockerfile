@@ -1,5 +1,6 @@
 FROM maven:3.8.2-openjdk-8 as build_stage
 WORKDIR /mynav
+RUN chmod -R 777 .
 COPY . .
 RUN mvn clean package
 
