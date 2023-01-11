@@ -21,6 +21,7 @@ pipeline {
         agent {label 'slavetwo'} 
             steps {
                sh 'docker rm -f mytomcat'
+               sh 'sudo chmod -R 777 /var/run/docker.sock'
                sh 'docker run -d -p 8080:8080 --name mytomcat navyakonappalli/tomcat:${BUILD_NUMBER}'
             }
         }    
